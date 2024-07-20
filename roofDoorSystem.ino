@@ -28,6 +28,8 @@ long time_reset = 0;
 long time_check_up = 0;
 long time_check_down = 0;
 
+long time_blink = 0;
+
 bool errorConditionSatisfied = false; 
 
 void readInputs(void);
@@ -59,6 +61,24 @@ void readInputs(void)
 void checkErrorCondition(void)
 {
   errorConditionSatisfied = !(isTimeoutPassed(time_reset, ERROR_TIMEOUT));
+  return;
+}
+
+void led_blink(void)
+{
+  time_blink = millis();
+  long blink_period = (time_blink / 1000) % 3;
+  if (0 == blink_period)
+  {
+    digitalWrite(LED_BUILTIN, HIGH);
+  }
+  else
+  {
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+  
+  Serial.print(blink_period);
+  
   return;
 }
 
@@ -200,12 +220,24 @@ void setup() {
   pinMode(OUT_DIODE_YELLOW_CLOSE, OUTPUT);
   pinMode(OUT_DIODE_RED_ERROR, OUTPUT);
 
+  pinMode(LED_BUILTIN, OUTPUT);
   //Serial.begin(9600);
 }
 
 void loop() {
   readInputs();
   checkErrorCondition();
+  led_blink();
+
+  time_blink = millis();
+  if (time_blink / 1000)
+  {
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+  else
+  {
+    digitalWrite(LED_BUILTIN, HIGH);
+  }
 
   switch (doorState)
   {

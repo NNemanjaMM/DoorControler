@@ -77,8 +77,6 @@ void led_blink(void)
     digitalWrite(LED_BUILTIN, LOW);
   }
   
-  Serial.print(blink_period);
-  
   return;
 }
 
@@ -228,16 +226,6 @@ void loop() {
   readInputs();
   checkErrorCondition();
   led_blink();
-
-  time_blink = millis();
-  if (time_blink / 1000)
-  {
-    digitalWrite(LED_BUILTIN, LOW);
-  }
-  else
-  {
-    digitalWrite(LED_BUILTIN, HIGH);
-  }
 
   switch (doorState)
   {
